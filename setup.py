@@ -9,7 +9,7 @@ setup(
     description='An client for the Trading Technologies Rest API 2.0',
     packages=find_packages(),  # Automatically find all packages in the project
     install_requires=[
-        'requests', 'logging', 'uuid', 'abc'
+        'requests', 'logging', 'uuid', 'abc', 'pandas', 'XlsxWriter'
         # List your library's dependencies here
     ],
 )

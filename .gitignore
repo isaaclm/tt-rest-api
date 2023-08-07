@@ -1,0 +1,6 @@
+.idea
+*.ini
+*.log
+*.xlsx
+__pycache__
+test_me.py
