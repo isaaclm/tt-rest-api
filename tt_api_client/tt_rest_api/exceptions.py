@@ -50,3 +50,11 @@ class PostRequestError(Exception):
             pass  # Response wasn't JSON or didn't contain error details
 
         super().__init__(error_message)
+
+class UsageError(Exception):
+    """
+    Exception raised when an API call has been requested with invalid arguments.
+    """
+
+    def __init__(self, error_message):
+        super().__init__(error_message)
