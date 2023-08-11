@@ -1,8 +1,6 @@
 from .base_client import TTBaseClient
 from .authentication import TTAuthentication
-
 from datetime import datetime, timedelta
-import pandas as pd
 
 
 class TTLedgerClient(TTBaseClient):
@@ -30,7 +28,7 @@ class TTLedgerClient(TTBaseClient):
         # Create a datetime object using the converted values
         dt = datetime.utcfromtimestamp(t_seconds) + timedelta(microseconds=t_microseconds)
 
-    def get_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False, as_dataframe=False):
+    def get_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False):
         """
         Retrieves fills for specified criteria.
 
@@ -64,14 +62,9 @@ class TTLedgerClient(TTBaseClient):
 
         url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/fills"
         response = self._authenticated_get(url, query=query)
-        json = response.json()
+        return response.json()
 
-        if not as_dataframe:
-            return json
-        else:
-            return pd.DataFrame(json["fills"])
-
-    def get_all_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False, as_dataframe=False):
+    def get_all_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False):
         """
         Retrieves all fills, handling pagination.
 
@@ -90,7 +83,7 @@ class TTLedgerClient(TTBaseClient):
         all_fills = []
 
         while True:
-            fills_json = self.get_fills(account_id, max_timestamp, min_timestamp, order_id, product_id, include_otc, as_dataframe)
+            fills_json = self.get_fills(account_id, max_timestamp, min_timestamp, order_id, product_id, include_otc)
 
             if not fills_json or not fills_json["fills"]:
                 break
@@ -110,26 +103,25 @@ class TTLedgerClient(TTBaseClient):
 
         return all_fills
 
-    def get_order_data(self, as_dataframe=False):
+    def get_order_data(self):
+        """
+        Retrieves all fills, handling pagination.
+
+        Args:
+            account_id (int): Account ID to filter fills.
+            max_timestamp (int/datetime): Filters fills before the specified datetime or int (epoch time in nanoseconds).
+            min_timestamp (int/datetime): Filters fills after the specified datetime or int (epoch time in nanoseconds).
+            order_id (int): Order ID to filter fills.
+            product_id (int): Product ID to filter fills.
+            include_otc (bool): Whether to include fills for OTC trades.
+
+        Returns:
+            json: Aggregated list of fills across multiple requests.
+        """
+
         url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orderdata"
         response = self._authenticated_get(url)
-        json = response.json()
-
-        if not as_dataframe:
-            return json
-
-        # Initialize an empty dictionary to hold DataFrames
-        data_frames = {}
-
-        # Iterate through the "orderData" dictionary
-        for key, value in json["orderData"].items():
-            # Create a DataFrame from the list of enums (value)
-            df = pd.DataFrame(value.items(), columns=["EnumValue", "Description"])
-
-            # Add the DataFrame to the dictionary with the key
-            data_frames[key] = df
-
-        return data_frames
+        return response.json()
 
     def get_orders(self):
         # url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orders"
