@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch
-from tt_api_client.tt_rest_api.authentication import TTAuthentication
+from tt_api_client.tt_rest_api.authenticator import TTAuthentication
 from tt_api_client.tt_rest_api.ledger import TTLedgerClient
 from tt_api_client.tt_rest_api.environments import TTEnvironments
-from tt_api_client.tt_rest_api.base_client import TTBaseClient
+from tt_api_client.tt_rest_api.rest_client import TTRestClient
 
 
 class TestTTLedgerClient(unittest.TestCase):

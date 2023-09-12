@@ -1,4 +1,4 @@
-from tt_api_client.tt_rest_api.authentication import TTAuthentication
+from tt_api_client.tt_rest_api.authenticator import TTAuthentication
 from tt_api_client.tt_rest_api.environments import TTEnvironments
 from tt_api_client.tt_rest_api.ledger import TTLedgerClient
 

@@ -7,7 +7,7 @@ from abc import ABC
 log = logging.getLogger()
 
 
-class TTBaseClient(ABC):
+class TTRestClient(ABC):
     """
     A base client for handling authenticated requests to the Trading Technologies API.
 
@@ -60,11 +60,5 @@ class TTBaseClient(ABC):
 
         if response.status_code != 200:
             raise PostRequestError(response)
-
-        json = response.json()
-        if json["lastPage"].lower().strip() != "true":
-            error_message = f"Call to {url} resulted in data with more than one page: lastPage={json['lastPage']}."
-            error_message += f" Need to implement additional code to handle this."
-            raise NotImplementedError(error_message)
 
         return response

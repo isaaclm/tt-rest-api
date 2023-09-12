@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from tt_api_client.tt_rest_api.authentication import *
+from tt_api_client.tt_rest_api.authenticator import *
 from tt_api_client.tt_rest_api.environments import TTEnvironments
 from tt_api_client.tt_rest_api.exceptions import TokenGenerationError
 

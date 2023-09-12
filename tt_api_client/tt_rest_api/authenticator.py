@@ -7,7 +7,7 @@ from .exceptions import TokenGenerationError
 log = logging.getLogger()
 
 
-class TTAuthentication:
+class TTAuthenticator:
     """
     A class for handling Trading Technologies API authentication.
 

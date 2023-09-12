@@ -51,6 +51,7 @@ class PostRequestError(Exception):
 
         super().__init__(error_message)
 
+
 class UsageError(Exception):
     """
     Exception raised when an API call has been requested with invalid arguments.
