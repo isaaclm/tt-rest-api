@@ -19,7 +19,7 @@ TT Documentation: https://library.tradingtechnologies.com/tt-rest/v2/gs-intro.ht
 - The **ttbacktest** service of the TT REST API is used for starting and stopping backtests for ADL algos as well as retrieving their results *- not implemented*
 
 ## Caveats
-The TT documentation suggests that a "lastPage" key will be returned in the JSON response. In my experience these always have the value "True". As some endpoints such as ttledger/fills can return a large amount of data, you cannot rely on "lastPage" to determine whether you have recieved the complete data set, and other methods of checking are required. Comments are provided in the code which outlines the approach taken.
+A a "lastPage" key will be returned in the JSON response, however in practive a value "True" is always returned. As some endpoints such as ttledger/fills can return a large amount of data, you cannot rely on "lastPage" to determine whether you have recieved the complete data set. Therefore other methods of checking are required. Where necessary, comments are provided in the code which outlines the approach taken.
 
 ## Contributions
 My focus is on pulling data for use in analytics, therefore my focus has been on implementing the HTTP GET endpoints. You are welcome to contribute and implement the POST endpoints.
