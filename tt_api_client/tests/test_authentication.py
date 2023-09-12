@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from tt_api_client.tt_rest_api.authenticator import *
+from tt_api_client.tt_rest_api.authenticator import TTAuthenticator
 from tt_api_client.tt_rest_api.environments import TTEnvironments
 from tt_api_client.tt_rest_api.exceptions import TokenGenerationError
 
@@ -12,7 +12,7 @@ class TestTTAuthentication(unittest.TestCase):
         self.secret_key = "your_secret_key"
         self.app_name = "YourApp"
         self.company_name = "YourCompany"
-        self.auth = TTAuthentication(self.environment, self.api_key, self.secret_key, self.app_name, self.company_name)
+        self.auth = TTAuthenticator(self.environment, self.api_key, self.secret_key, self.app_name, self.company_name)
 
     @patch("requests.post")
     def test_get_token_success(self, mock_post):

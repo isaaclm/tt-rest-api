@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from tt_api_client.tt_rest_api.authenticator import TTAuthentication
+from tt_api_client.tt_rest_api.authenticator import TTAuthenticator
 from tt_api_client.tt_rest_api.ledger import TTLedgerClient
 from tt_api_client.tt_rest_api.environments import TTEnvironments
 from tt_api_client.tt_rest_api.rest_client import TTRestClient
@@ -8,10 +8,10 @@ from tt_api_client.tt_rest_api.rest_client import TTRestClient
 
 class TestTTLedgerClient(unittest.TestCase):
     def setUp(self):
-        self.auth_handler = Mock(spec=TTAuthentication)
+        self.auth_handler = Mock(spec=TTAuthenticator)
         self.ledger_client = TTLedgerClient(self.auth_handler)
 
-    @patch("tt_api_client.tt_rest_api.base_client.TTBaseClient._authenticated_get")
+    @patch("tt_api_client.tt_rest_api.rest_client.TTRestClient._authenticated_get")
     def test_get_fills_with_query_parameters(self, mock_authenticated_get):
         mock_response = Mock()
         mock_response.json.return_value = {}
@@ -44,7 +44,7 @@ class TestTTLedgerClient(unittest.TestCase):
             query=expected_query
         )
 
-    @patch("tt_api_client.tt_rest_api.base_client.TTBaseClient._authenticated_get")
+    @patch("tt_api_client.tt_rest_api.rest_client.TTRestClient._authenticated_get")
     def test_get_fills_return_json(self, mock_authenticated_get):
         mock_response = Mock()
         mock_response.json.return_value = {"data": "fill_data"}
