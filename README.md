@@ -1,9 +1,9 @@
 # TT_Rest_API
 This is a client for the Trading Technolgies (TT) Rest API version 2.0.
 
-It's based around a few key componenets.
+It's based around a few key componenets
 - TTAuthenticator, used to generate tokens and authenticate API requests
-- Rest Clients, API clients for the TT services such as ledger (orders and fills), monitor (SOD), pds (product and instrument information), there is a complete list of TT services below
+- TT Rest Clients, API clients for the TT services such as ledger, monitor, pds (there is a complete list of TT services below)
 
 TT Documentation: https://library.tradingtechnologies.com/tt-rest/v2/gs-intro.html
 
