@@ -2,6 +2,10 @@ from .rest_client import TTRestClient
 from .authenticator import TTAuthenticator
 from .exceptions import UsageError
 
+import logging
+
+log = logging.getLogger()
+
 
 class TTPdsClient(TTRestClient):
     endpoint = "ttpds"
@@ -134,7 +138,45 @@ class TTPdsClient(TTRestClient):
         response = self._authenticated_get(url)
         return response.json()
 
-    def get_instruments(self, product_type_id=None, product_id=None, alias=None):
+    def get_instruments(self, product_type_id=None, product_id=None, alias=None, next_page_key=None):
+        """
+        Gets a list of instruments given a product type ID or a product ID.
+
+        Note: Requires a value populated in either the productId or alias parameter. The productTypeId parameter does
+        not return any instruments when used by itself.
+
+        Args:
+            product_type_id: Product type ID. Can be retrieved by the /productdata GET request.
+            product_id: Filter response to fills for a specific product. Product ID can be retrieved using the ttpds
+                        service's /products GET request.
+            alias: An alias
+            next_page_key: Key used to request the next page of data following a prior request. Responses are limited to around 500 records. Included in the response is a field named 'lastPage' which indicates if a response is the final page of the data requested. If a response is not the final page, the 'lastPage' value will be 'false' and the key needed to request the next page will be included as the 'nextPageKey' value of the response.
+
+        Returns:
+            dict: JSON response containing a list of instruments.
+        """
+        if (product_type_id is not None) and (sum(param is not None for param in [product_id, alias]) == 0):
+            raise UsageError("Requires a value populated in either the product_id or alias parameter. The \
+                              product_type_id parameter does not return any instruments when used by itself.")
+
+        query = {}
+
+        if product_type_id is not None:
+            query.update({"productTypeId": product_type_id})
+
+        if product_id is not None:
+            query.update({"productId": product_id})
+        else:
+            query.update({"alias": alias})
+
+        if next_page_key is not None:
+            query.update({"nextPageKey": str(next_page_key)})
+
+        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/instruments"
+        response = self._authenticated_get(url, query=query)
+        return response.json()
+
+    def get_all_instruments(self, product_type_id=None, product_id=None, alias=None):
         """
         Gets a list of instruments given a product type ID or a product ID.
 
@@ -150,18 +192,13 @@ class TTPdsClient(TTRestClient):
         Returns:
             dict: JSON response containing a list of instruments.
         """
-        if sum(param is not None for param in [product_type_id, product_id, alias]) != 1:
-            raise UsageError("Exactly one parameter of product_type_id/product_id/alias should be non-null.")
-        if product_type_id:
-            query = { "productTypeId": product_type_id }
-        elif product_id:
-            query = { "productId": product_id }
-        else:
-            query = { "alias": alias }
-
-        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/instruments"
-        response = self._authenticated_get(url, query=query)
-        return response.json()
+        return self._generic_paginated_request(
+            self.get_instruments,
+            results_key="instruments",
+            product_type_id=product_type_id,
+            product_id=product_id,
+            alias=alias
+        )
 
     def get_markets(self):
         """
@@ -276,7 +313,31 @@ class TTPdsClient(TTRestClient):
         response = self._authenticated_get(url)
         return response.json()
 
-    def get_products(self, market_id):
+    def get_products(self, market_id, next_page_key=None):
+        """
+        Gets a list of products for a given market.
+
+        Args:
+            market_id: A Market ID.
+            next_page_key: Key used to request the next page of data following a prior request. Responses are limited to around 500 records. Included in the response is a field named 'lastPage' which indicates if a response is the final page of the data requested. If a response is not the final page, the 'lastPage' value will be 'false' and the key needed to request the next page will be included as the 'nextPageKey' value of the response.
+
+        Returns:
+            dict: JSON response containing a list of products.
+        """
+        query = {
+            "marketId": market_id
+        }
+
+        if next_page_key is not None:
+            query.update({
+                "nextPageKey": str(next_page_key)
+            })
+
+        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/products"
+        response = self._authenticated_get(url, query=query)
+        return response.json()
+
+    def get_all_products(self, market_id):
         """
         Gets a list of products for a given market.
 
@@ -286,13 +347,11 @@ class TTPdsClient(TTRestClient):
         Returns:
             dict: JSON response containing a list of products.
         """
-        query = {
-            "marketId": market_id
-        }
-
-        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/products"
-        response = self._authenticated_get(url, query=query)
-        return response.json()
+        return self._generic_paginated_request(
+            self.get_products,
+            results_key="products",
+            market_id=market_id
+        )
 
     def get_security_exchanges(self):
         """
@@ -305,13 +364,33 @@ class TTPdsClient(TTRestClient):
         response = self._authenticated_get(url)
         return response.json()
 
-    def get_synthetic_instruments(self):
+    def get_synthetic_instruments(self, next_page_key=None):
+        """
+        Gets a list of synthetic instruments.
+
+        Returns:
+            dict: JSON response containing a list of synthetic instruments.
+            next_page_key: Key used to request the next page of data following a prior request. Responses are limited to around 500 records. Included in the response is a field named 'lastPage' which indicates if a response is the final page of the data requested. If a response is not the final page, the 'lastPage' value will be 'false' and the key needed to request the next page will be included as the 'nextPageKey' value of the response.
+
+        """
+        if next_page_key is not None:
+            query = { "nextPageKey": str(next_page_key) }
+        else:
+            query = None
+
+        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/syntheticinstruments"
+        response = self._authenticated_get(url, query=query)
+        return response.json()
+
+    def get_all_synthetic_instruments(self):
         """
         Gets a list of synthetic instruments.
 
         Returns:
             dict: JSON response containing a list of synthetic instruments.
         """
-        url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/syntheticinstruments"
-        response = self._authenticated_get(url)
-        return response.json()
+        return self._generic_paginated_request(
+            self.get_synthetic_instruments,
+            results_key="syntheticInstruments"
+        )
+

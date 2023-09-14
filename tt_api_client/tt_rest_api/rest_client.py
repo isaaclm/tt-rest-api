@@ -62,3 +62,26 @@ class TTRestClient(ABC):
             raise PostRequestError(response)
 
         return response
+
+    def _generic_paginated_request(self, request_func, results_key, *args, **kwargs):
+        json_response = request_func(*args, **kwargs)
+        items = json_response[results_key]
+        is_last_page = json_response["lastPage"].lower().strip() == "true"
+        next_page_key = json_response["nextPageKey"] if ("nextPageKey" in json_response) else "[Key not included]"
+        logging.debug(f"{request_func.__name__}: lastPage={is_last_page}, nextPageKey={next_page_key}")
+
+        while not is_last_page:
+            try:
+                next_page_key = json_response["nextPageKey"]
+                json_response = request_func(*args, **kwargs, next_page_key=next_page_key)
+                items.extend(json_response[results_key])
+                is_last_page = json_response["lastPage"].lower().strip() == "true"
+                logging.debug(f"{request_func.__name__}: lastPage={is_last_page}, nextPageKey={next_page_key}")
+            except KeyError as e:
+                error_message = f"'nextPageKey' not returned in server response to {request_func.__name__}(). Returning the retrieved, but possibly incomplete data."
+                error_message += f"\n\tError: {e}"
+                logging.warning(error_message)
+                break
+
+        json_response.update({results_key: items})
+        return json_response

@@ -43,14 +43,14 @@ class TTLedgerClient(TTRestClient):
         dt = datetime.utcfromtimestamp(t_seconds) + timedelta(microseconds=t_microseconds)
         return dt
 
-    def get_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False):
+    def get_fills(self, min_timestamp=None, max_timestamp=None, account_id=None, order_id=None, product_id=None, include_otc: bool = False):
         """
         Retrieves fills for specified criteria.
 
         Args:
-            account_id (int): Account ID to filter fills.
-            max_timestamp (int/datetime): Filters fills before the specified datetime or int (epoch time in nanoseconds).
             min_timestamp (int/datetime): Filters fills after the specified datetime or int (epoch time in nanoseconds).
+            max_timestamp (int/datetime): Filters fills before the specified datetime or int (epoch time in nanoseconds).
+            account_id (int): Account ID to filter fills.
             order_id (int): Order ID to filter fills.
             product_id (int): Product ID to filter fills.
             include_otc (int): Whether to include fills for OTC trades.
@@ -70,7 +70,7 @@ class TTLedgerClient(TTRestClient):
             "minTimestamp": self._convert_to_nanoseconds(min_timestamp) if min_timestamp else None,
             "orderId": order_id,
             "productId": product_id,
-            "includeOTC": include_otc
+            "includeOTC": str(include_otc).lower()
         }
         # Filter out the keys with Null values
         query = {key: value for key, value in query.items() if value is not None}
@@ -79,14 +79,14 @@ class TTLedgerClient(TTRestClient):
         response = self._authenticated_get(url, query=query)
         return response.json()
 
-    def get_all_fills(self, account_id=None, max_timestamp=None, min_timestamp=None, order_id=None, product_id=None, include_otc=False):
+    def get_all_fills(self, min_timestamp=None, max_timestamp=None, account_id=None, order_id=None, product_id=None, include_otc: bool = False):
         """
         Retrieves all fills, handling pagination.
 
         Args:
-            account_id (int): Account ID to filter fills.
-            max_timestamp (int/datetime): Filters fills before the specified datetime or int (epoch time in nanoseconds).
             min_timestamp (int/datetime): Filters fills after the specified datetime or int (epoch time in nanoseconds).
+            max_timestamp (int/datetime): Filters fills before the specified datetime or int (epoch time in nanoseconds).
+            account_id (int): Account ID to filter fills.
             order_id (int): Order ID to filter fills.
             product_id (int): Product ID to filter fills.
             include_otc (bool): Whether to include fills for OTC trades.
@@ -98,14 +98,21 @@ class TTLedgerClient(TTRestClient):
         all_fills = []
 
         while True:
-            fills_json = self.get_fills(account_id, max_timestamp, min_timestamp, order_id, product_id, include_otc)
+            fills_json = self.get_fills(
+                min_timestamp=min_timestamp,
+                max_timestamp=max_timestamp,
+                account_id=account_id,
+                order_id=order_id,
+                product_id=product_id,
+                include_otc=include_otc
+            )
 
             if "fills" in fills_json:
                 all_fills.extend(fills_json["fills"])
 
                 message = "Requested fills"
-                message += f"\n\tParams: max_timestamp={min_timestamp}, min_timestamp={max_timestamp},min_timestamp=" \
-                           f"{max_timestamp}, order_id={order_id}, product_id={product_id}, include_otc={include_otc}"
+                message += f"\n\tParams: min_timestamp={min_timestamp}, max_timestamp={max_timestamp}, account_id=" \
+                           f"{account_id}, order_id={order_id}, product_id={product_id}, include_otc={include_otc}"
                 message += f"\n\tResults Count: {len(fills_json['fills'])}"
                 log.debug(message)
 
@@ -125,7 +132,8 @@ class TTLedgerClient(TTRestClient):
             min_timestamp = fills_json["fills"][-1]['timeStamp']
             min_timestamp = int(min_timestamp) + 1 if isinstance(min_timestamp, str) else min_timestamp + 1
 
-        return all_fills
+        fills_json.update({"fills": all_fills})
+        return fills_json
 
     def get_order_data(self):
         """
@@ -140,11 +148,11 @@ class TTLedgerClient(TTRestClient):
         response = self._authenticated_get(url)
         return response.json()
 
-    def get_orders(self):
-        # url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orders"
-        raise NotImplementedError()
-
-    def get_order_by_id(self, order_id):
-        # url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orders/{order_id}"
-        raise NotImplementedError()
+    # def get_orders(self):
+    #     # url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orders"
+    #     raise NotImplementedError()
+    #
+    # def get_order_by_id(self, order_id):
+    #     # url = f"{self.TT_BASE_URL}/{self.endpoint}/{self.auth_handler.environment.value}/orders/{order_id}"
+    #     raise NotImplementedError()
 
