@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 # Refer to the official Python Packaging Authority (PyPA) documentation for more details: https://packaging.python.org/tutorials/packaging-projects/
 setup(
-    name='tt_rest_api_2_0',
+    name='tt-rest-api',
     version='0.1.0',
-    author='Isaac Manuel',
-    author_email='',
+    author='Isaac',
     description='An client for the Trading Technologies Rest API 2.0',
-    packages=find_packages(),  # Automatically find all packages in the project
+    url='https://github.com/isaaclm/tt-rest-api',
+    packages=['ttrest'],
+    package_dir={'ttrest': 'ttrest'},
     install_requires=[
         'requests', 'logging', 'uuid', 'datetime'
-        # List your library's dependencies here
     ],
 )
