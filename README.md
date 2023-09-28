@@ -102,7 +102,7 @@ Output:
       'accountType': 1,
       'companyId': 123,
       'id': 123456,
-      'name': '1ccount_1',
+      'name': 'account_1',
       'parentAccountId': 098765,
       'parentId': 098765,
       'revision': 1
