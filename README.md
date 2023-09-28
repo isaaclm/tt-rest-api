@@ -1,7 +1,7 @@
 # TT_Rest_API
 This is a client for the Trading Technolgies (TT) Rest API version 2.0.
 
-It's based around a few key componenets
+It's based around a few key components
 - TTAuthenticator, used to generate tokens and authenticate API requests
 - TTEnvironments, allows connection to either the live or UAT environment
 - TT Rest Clients, API clients for the TT services (refer to the list of services below)
@@ -18,8 +18,30 @@ TT Documentation: https://library.tradingtechnologies.com/tt-rest/v2/gs-intro.ht
 - The **ttgroup** service of the TT REST API is used for requests pertaining to risk limits for risk groups, risk accounts, and user groups *- not implemented*
 - The **ttbacktest** service of the TT REST API is used for starting and stopping backtests for ADL algos as well as retrieving their results *- not implemented*
 
-## Caveats
-A "lastPage" key will be returned in the server's JSON response, however in practice the value "True" is always returned. As some endpoints such as ttledger/fills can return a large amount of data, you cannot rely on "lastPage" to determine whether you have recieved the complete data set. Therefore other methods of checking are required. Where necessary, comments are provided in the code which outlines the approach taken.
+## Code Examples
+```python
+from ttrest import TTAuthenticator
+from ttrest import TTEnvironments
+from ttrest import TTLedgerClient
+
+app_name = "Your App"
+company_name = "Your Company"
+
+api_secret = "00000000-0000-0000-0000-000000000000:11111111-1111-1111-1111-111111111111"  # your API secret
+api_key = api_secret.split(":")[0]
+
+environment = TTEnvironments.UAT
+
+# create and TTAuthentication to handle the API authentication
+auth_handler = TTAuthenticator(environment, api_key, api_secret, app_name, company_name)
+
+# create a ledger client
+ledger_client = TTLedgerClient(auth_handler)
+
+# get and print all fills, the 'all' methods handle pagination
+fills = ledger_client.get_all_fills()
+print(fills)
+```
 
 ## Contributions
 My focus is on pulling data for use in analytics, therefore my focus has been on implementing the HTTP GET endpoints. You are welcome to contribute and implement the POST endpoints.

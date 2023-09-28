@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch
-from tt_api_client.tt_rest_api.authenticator import TTAuthenticator
-from tt_api_client.tt_rest_api.environments import TTEnvironments
-from tt_api_client.tt_rest_api.exceptions import TokenGenerationError
+from ttrest import TTAuthenticator
+from ttrest import TTEnvironments
+from ttrest import TokenGenerationError
 
 
 class TestTTAuthentication(unittest.TestCase):
@@ -51,7 +51,7 @@ class TestTTAuthentication(unittest.TestCase):
         mock_request = Mock()
 
         with patch.object(mock_request, 'headers', {}) as mock_headers:
-            authenticated_request = self.auth.authenticate_request(mock_request)
+            self.auth.authenticate_request(mock_request)
 
         self.assertFalse(mock_post.called)  # No new calls to get_token
         self.assertEqual(mock_headers["Authorization"], "Bearer your_existing_access_token")
@@ -70,7 +70,7 @@ class TestTTAuthentication(unittest.TestCase):
         mock_request = Mock()
 
         with patch.object(mock_request, 'headers', {}) as mock_headers:
-            authenticated_request = self.auth.authenticate_request(mock_request)
+            self.auth.authenticate_request(mock_request)
 
         self.assertTrue(mock_post.called)  # Call to get_token is made
         self.assertEqual(mock_headers["Authorization"], "Bearer your_new_access_token")

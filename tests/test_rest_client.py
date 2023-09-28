@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from tt_api_client.tt_rest_api.rest_client import TTRestClient
+from ttrest.rest_client import TTRestClient
 
 
 class TestTTRestClient(unittest.TestCase):
@@ -92,8 +92,6 @@ class TestTTRestClient(unittest.TestCase):
             "results_key": [1, 2, 3],
             "lastPage": "false"
         })
-
-        print("This test should have generated a warning...")
 
 
 if __name__ == '__main__':

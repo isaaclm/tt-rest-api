@@ -6,3 +6,4 @@ __pycache__
 test_me.py
 *dist
 *tt_rest_api_2_0.egg-info
+main.py
