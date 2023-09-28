@@ -1,7 +1,7 @@
 # Trading Technologies Rest API
 This is a client for the Trading Technolgies (TT) Rest API version 2.0.
 
-It's based around a few key components
+The client is based around a few key components
 - TTAuthenticator, used to generate tokens and authenticate API requests
 - TTEnvironments, allows connection to either the live or UAT environment
 - TT Rest Clients, API clients for the TT services (refer to the list of services below)
