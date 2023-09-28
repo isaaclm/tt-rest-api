@@ -1,4 +1,4 @@
-# TT Rest API
+# Trading Technologies Rest API
 This is a client for the Trading Technolgies (TT) Rest API version 2.0.
 
 It's based around a few key components
