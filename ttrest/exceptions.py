@@ -14,7 +14,6 @@ class TokenGenerationError(Exception):
         error_message = "Token acquisition failed"
         try:
             error_data = response.json()  # If the response contains error details
-            print(error_data)
             error_message += "\nStatus Code: {}".format(error_data.get("statusCode", "unknown"))
             error_message += "\nStatus Description: {}".format(error_data.get("status_desc", "none"))
         except ValueError:
@@ -42,7 +41,6 @@ class PostRequestError(Exception):
         error_message = "POST request error"
         try:
             error_data = response.json()  # If the response contains error details
-            print(error_data)
             error_message += "\nStatus Code: {}".format(error_data.get("error_message", error_message))
             error_message += "\nError Message: {}".format(error_data.get("error_message", error_message))
             error_message += "\nText: {}".format(error_data.get("text", error_message))

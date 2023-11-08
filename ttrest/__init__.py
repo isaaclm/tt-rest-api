@@ -3,5 +3,6 @@ from .authenticator import TTAuthenticator
 from .account import TTAccountClient
 from .ledger import TTLedgerClient
 from .monitor import TTMonitorClient
+from .user import TTUserClient
 from .pds import TTPdsClient
 from .exceptions import TokenGenerationError, NotAuthorisedError, UsageError, PostRequestError
