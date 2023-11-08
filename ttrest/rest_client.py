@@ -20,7 +20,7 @@ class TTRestClient(ABC):
         TT_BASE_URL (str): Base URL for the Trading Technologies API.
     """
 
-    TT_BASE_URL = "https://apigateway.trade.tt"
+    TT_BASE_URL = "https://ttrestapi.trade.tt"  # "https://apigateway.trade.tt" is to be deprecated in october 2024, see https://library.tradingtechnologies.com/release_notes/production-2023-10.html
 
     def __init__(self, auth_handler):
         self.auth_handler = auth_handler
