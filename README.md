@@ -124,7 +124,7 @@ Output:
 ```
 
 ## Testing
-There are two sets of tests, unit tests and integration tests. The unit tests are run locally and do not require any setup. The integration tests require a TT account and API key/secret and a setup aligning with a "test_config.ini" file as follows, that should be located in the "tests.integration_tests" directory.
+There are two sets of tests, unit tests and integration tests. The unit tests are run locally and do not require any setup. The integration tests require a TT account and API key/secret and a setup aligning with a "test_config.ini" file in the UAT environment as follows:
 
 ```python
 # to be saved in the tests.integration_tests directory as "test_config.ini"
