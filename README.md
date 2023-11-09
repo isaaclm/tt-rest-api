@@ -123,5 +123,23 @@ Output:
 }
 ```
 
+## Testing
+There are two sets of tests, unit tests and integration tests. The unit tests are run locally and do not require any setup. The integration tests require a TT account and API key/secret and a setup aligning with a "test_config.ini" file as follows, that should be located in the "tests.integration_tests" directory.
+
+```python
+# to be saved in the tests.integration_tests directory as "test_config.ini"
+
+[REST_API]
+tt_rest_key = [your api key]
+
+[USER_CLIENT_TESTING]
+user_id = [test user id]
+account_id = [test account id]
+
+[ACCOUNT_CLIENT_TESTING]
+account_id = [test account id]
+```
+
+
 ## Contributions
 My focus is on pulling data for use in analytics, therefore my I have been implementing the GET endpoints. Contribution is welcome, especially to implement the POST endpoints.
