@@ -39,6 +39,8 @@ class PostRequestError(Exception):
 
     def __init__(self, response):
         error_message = "POST request error"
+        self.response = response
+
         try:
             error_data = response.json()  # If the response contains error details
             error_message += "\nStatus Code: {}".format(error_data.get("error_message", error_message))
